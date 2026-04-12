@@ -1,24 +1,32 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import "./global.css";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+SplashScreen.preventAutoHideAsync();
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+export default function Layout() {
+  useEffect(() => {
+    SplashScreen.hideAsync();
+  }, []);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        {/* Group Tab */}
+        <Stack.Screen name="(tabs)" />
+
+        {/* Group Auth (Login/Signup) */}
+        <Stack.Screen name="(auth)/login" />
+        <Stack.Screen name="(auth)/signup" />
+
+        {/* Group Screens */}
+        <Stack.Screen name="(screens)/moviedetails" />
+        <Stack.Screen name="(screens)/selectshowtime" />
+        <Stack.Screen name="(screens)/booking" />
+        <Stack.Screen name="(screens)/payment" />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
