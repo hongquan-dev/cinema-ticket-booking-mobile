@@ -77,7 +77,6 @@ const Payment = () => {
             const getToken = async () => {
                 const rawUserId = await AsyncStorage.getItem('user_id');
                 const cleanUserId = rawUserId ? rawUserId.replace(/"/g, '') : null;
-                console.log(cleanUserId);
                 setUserId(cleanUserId);
             }
             getToken();

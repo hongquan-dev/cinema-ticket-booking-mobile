@@ -185,7 +185,6 @@ const SelectShowtime = () => {
                 <View>
                     <FlatList
                         data={days}
-                        bounces={false}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(_, index) => index.toString()}
@@ -211,7 +210,7 @@ const SelectShowtime = () => {
 
                 {/* SHOWTIME GRID: Grid of available hours */}
                 <Text className="text-white text-xl font-semibold mt-8 mb-4">Suất chiếu</Text>
-                <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+                <ScrollView showsVerticalScrollIndicator={false}>
                     <View className="flex-row flex-wrap gap-4 pb-10">
                         {timeSlots.map((slot, index) => (
                             <TouchableOpacity

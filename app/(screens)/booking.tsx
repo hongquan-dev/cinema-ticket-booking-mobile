@@ -225,24 +225,24 @@ const BookingPage = () => {
                 <View className="w-[28px]" />
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} className="flex-1" bounces={false}>
-                {/* Screen */}
-                <View className="items-center mt-5 mb-10">
-                    <View className="w-[80%] h-[4px] bg-white rounded-full shadow-lg shadow-white" />
-                    <View
-                        style={{
-                            borderTopWidth: 20,
-                            borderTopColor: 'rgba(255,255,255,0.1)',
-                            borderLeftWidth: 50,
-                            borderLeftColor: 'transparent',
-                            borderRightWidth: 50,
-                            borderRightColor: 'transparent',
-                            width: width * 0.8,
-                            marginTop: 5
-                        }}
-                    />
-                </View>
+            {/* Screen */}
+            <View className="items-center mt-5 mb-10">
+                <View className="w-[80%] h-[4px] bg-white rounded-full shadow-lg shadow-white" />
+                <View
+                    style={{
+                        borderTopWidth: 20,
+                        borderTopColor: 'rgba(255,255,255,0.1)',
+                        borderLeftWidth: 50,
+                        borderLeftColor: 'transparent',
+                        borderRightWidth: 50,
+                        borderRightColor: 'transparent',
+                        width: width * 0.8,
+                        marginTop: 5
+                    }}
+                />
+            </View>
 
+            <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
                 {/* Seat Map */}
                 <View className="items-center">
                     {/* Column numbers */}
@@ -318,7 +318,7 @@ const BookingPage = () => {
             </ScrollView>
 
             {/* FOOTER */}
-            <View className="bg-[#1a1d3d] border-t border-white/10 p-5 pb-10">
+            <View className="bg-[#272b50] border-t border-white/10 p-5 pb-10">
                 <Text className="text-white text-2xl font-semibold mb-1">
                     {showtime.data.movie.movieName} - T{showtime.data.movie.ageRating}
                 </Text>

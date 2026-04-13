@@ -25,7 +25,7 @@ export default function HomePage() {
 
     // Current date and cinema id
     const cinemaId = '78dd3402-6e25-4534-b289-673340392d92';
-    const currentDate = ['2026-03-25', '2026-03-26', '2026-03-27'];
+    const currentDate = ['2026-03-25', '2026-03-26', '2026-03-27', '2026-03-28'];
     const [movies, setMovies] = useState<any[]>([]);
     const [comingSoonMovies, setComingSoonMovies] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -74,7 +74,6 @@ export default function HomePage() {
     // Call api for fetch Showing Movies 
     const fetchShowingMovies = async () => {
         try {
-            setLoading(true);
             const response = await showtimeApi.getGrouped(cinemaId, currentDate[0]);
             await AsyncStorage.setItem('currentDate', JSON.stringify(currentDate));
             await AsyncStorage.setItem('cinemaId', JSON.stringify(cinemaId));
@@ -100,7 +99,6 @@ export default function HomePage() {
                 { id: 'right-spacer' }
             ]);
         } catch (error) {
-            console.error("Lỗi gọi API showtimes:", error);
         } finally {
             setLoading(false);
         }
@@ -129,14 +127,20 @@ export default function HomePage() {
             }));
             setComingSoonMovies(mapped);
         } catch (error) {
-            console.error("Lỗi API phim sắp chiếu:", error);
         }
     };
 
     useFocusEffect(
         useCallback(() => {
+            setActiveIndex(0);
+            scrollX.setValue(0);
+            isReversing.current = false;
+
+            if (flatListRef.current) {
+                flatListRef.current.scrollToOffset({ offset: 0, animated: false });
+            }
+
             const fetchData = async () => {
-                setLoading(true);
                 await Promise.all([
                     fetchShowingMovies(),
                     fetchComingSoonMovies()
