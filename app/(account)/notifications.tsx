@@ -1,11 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, StatusBar, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { PostCard } from '../../src/components/card/PostCard';
 import { PostCategory, PostStatus } from '../../src/enums/postEnums';
 import postApi from '../../src/services/postApi';
 
-export default function NewsPage() {
+export default function NotificationsPage() {
     const router = useRouter();
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export default function NewsPage() {
                 page: 1,
                 size: 20,
                 status: PostStatus.PUBLISHED,
-                category: PostCategory.NEWS
+                category: PostCategory.ANNOUNCEMENT
             };
 
             const response: any = await postApi.getAll(params);
@@ -59,8 +60,16 @@ export default function NewsPage() {
     };
 
     return (
-        <View className="flex-1 bg-[#272b50] pt-14">
+        <View className="flex-1 bg-[#272b50]">
             <StatusBar barStyle="light-content" />
+
+            <View className="flex-row items-center justify-between px-[15px] pt-[50px] z-10 bg-[#272b50]">
+                <TouchableOpacity onPress={() => router.back()} className="p-[5px]">
+                    <Ionicons name="arrow-back" size={28} color="white" />
+                </TouchableOpacity>
+                <Text className="text-white text-[18px] font-medium">Thông báo</Text>
+                <View className="w-[28px]" />
+            </View>
 
             {/* Show full screen loader only on initial load */}
             {loading && !refreshing ? (
@@ -77,7 +86,7 @@ export default function NewsPage() {
                             time={formatTime(item.createdAt)}
                             imageUri={item.thumbnailUrl} // Ensure this field matches your Post model
                             onPress={() => router.push({
-                                pathname: '/(screens)/newsdetails',
+                                pathname: '/(account)/notificationdetails',
                                 params: {
                                     id: item.id,
                                     category: item.category,

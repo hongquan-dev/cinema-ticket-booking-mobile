@@ -3,8 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
-import authService from '../../src/services/authService';
 import useConfirm from '../../src/hooks/useConfirm';
+import authService from '../../src/services/authService';
 
 // Reusable Menu Item Component
 const MenuItem = ({
@@ -127,6 +127,7 @@ export default function AccountPage() {
                                 icon={<Ionicons name="notifications" size={22} color="white" />}
                                 title="Thông báo"
                                 iconBgColor="bg-pink-600"
+                                onPress={() => router.push('/(account)/notifications')}
                             />
                             <MenuItem
                                 icon={<MaterialCommunityIcons name="card-account-details" size={22} color="white" />}

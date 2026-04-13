@@ -2,7 +2,8 @@
 export const PostCategory = {
     NEWS: 'NEWS',
     PROMOTION: 'PROMOTION',
-    FESTIVAL: 'FESTIVAL'
+    FESTIVAL: 'FESTIVAL',
+    ANNOUNCEMENT: 'ANNOUNCEMENT'
 };
 
 export const PostStatus = {
@@ -15,6 +16,7 @@ export const PostLabel = {
     [PostCategory.NEWS]: 'Tin tức',
     [PostCategory.PROMOTION]: 'Khuyến mãi',
     [PostCategory.FESTIVAL]: 'Sự kiện',
+    [PostCategory.ANNOUNCEMENT]: 'Thông báo',
 
     [PostStatus.DRAFT]: 'Bản nháp',
     [PostStatus.PUBLISHED]: 'Công khai',

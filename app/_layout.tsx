@@ -27,6 +27,10 @@ export default function Layout() {
         <Stack.Screen name="(screens)/booking" />
         <Stack.Screen name="(screens)/payment" />
         <Stack.Screen name="(screens)/newsdetails" />
+
+        {/* Group Account */}
+        <Stack.Screen name="(account)/notifications" />
+        <Stack.Screen name="(account)/notificationdetails" />
       </Stack>
     </SafeAreaProvider>
   );
