@@ -26,6 +26,7 @@ export default function Layout() {
         <Stack.Screen name="(screens)/selectshowtime" />
         <Stack.Screen name="(screens)/booking" />
         <Stack.Screen name="(screens)/payment" />
+        <Stack.Screen name="(screens)/newsdetails" />
       </Stack>
     </SafeAreaProvider>
   );

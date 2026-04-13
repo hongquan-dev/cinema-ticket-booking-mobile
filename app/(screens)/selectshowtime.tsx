@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
-import showtimeApi from '../../src/api/showtimeApi';
+import showtimeApi from '../../src/services/showtimeApi';
 
 const SelectShowtime = () => {
     const router = useRouter();

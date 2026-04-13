@@ -2,9 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, FlatList, Image, Platform, ScrollView, StatusBar, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
-import movieApi from '../../src/api/movieApi';
-import showtimeApi from '../../src/api/showtimeApi';
 import { MovieCard } from '../../src/components/card/MovieCard';
+import movieApi from '../../src/services/movieApi';
+import showtimeApi from '../../src/services/showtimeApi';
 
 export default function HomePage() {
     const { width } = useWindowDimensions();
@@ -203,154 +203,156 @@ export default function HomePage() {
         );
     }
     return (
-        <ScrollView
-            className="flex-1 bg-[#272b50]"
-            contentContainerStyle={{ paddingBottom: 5 }}
-            showsVerticalScrollIndicator={false}
-        >
-            <StatusBar barStyle="light-content" />
-            {/* 1. Header Logo & Title */}
-            <View className="items-center mt-20 mb-8 px-4">
-                <View className="flex-row items-center justify-center">
-                    <View className="w-16 h-14 rounded-lg overflow-hidden bg-white/10">
-                        <Image
-                            source={require('../../assets/images/NCC_Logo.jpg')}
-                            style={{ width: '100%', height: '100%' }}
-                            resizeMode="cover"
+        <View className="flex-1 bg-[#272b50] pt-14">
+            <ScrollView
+                className="flex-1 bg-[#272b50]"
+                contentContainerStyle={{ paddingBottom: 5 }}
+                showsVerticalScrollIndicator={false}
+            >
+                <StatusBar barStyle="light-content" />
+                {/* 1. Header Logo & Title */}
+                <View className="items-center mt-6 mb-8 px-4">
+                    <View className="flex-row items-center justify-center">
+                        <View className="w-16 h-14 rounded-lg overflow-hidden bg-white/10">
+                            <Image
+                                source={require('../../assets/images/NCC_Logo.jpg')}
+                                style={{ width: '100%', height: '100%' }}
+                                resizeMode="cover"
+                            />
+                        </View>
+                        <View className="ml-4">
+                            <Text className="text-white text-[16px] font-bold uppercase text-center">
+                                Trung tâm chiếu phim quốc gia
+                            </Text>
+                            <Text className="text-white text-[14px] font-medium uppercase text-center">
+                                National Cinema Center
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+
+                {/* Movie are showing */}
+                <View className="flex-row items-center px-5 mb-6">
+                    <View className="w-4 h-4 rounded-full bg-red-600 mr-2" />
+                    <Text className="text-white text-[20px] font-semibold">Phim đang chiếu</Text>
+                </View>
+
+                {/* 2. Movie carousel */}
+                {realMovies.length > 0 ? (
+                    <View>
+                        <Animated.FlatList
+                            ref={flatListRef}
+                            data={movies}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item, index) => `${item.id}-${index}`}
+                            snapToInterval={ITEM_SIZE} // Stop point for each item
+                            snapToAlignment="start"    // Alignment point for stopping
+                            decelerationRate={Platform.OS === 'ios' ? 'fast' : 0.8}
+                            scrollEventThrottle={16}
+                            disableIntervalMomentum={true} // Only allow sliding one by one
+                            onScroll={onScroll}
+                            onScrollBeginDrag={stopAutoPlay} // Stop auto play when user touch
+                            onScrollEndDrag={startAutoPlay} // Start auto play when user stop touch
+                            contentContainerStyle={{ paddingHorizontal: 0 }}
+                            renderItem={({ item, index }) => {
+                                // If it's a dummy item
+                                if (!item.image) {
+                                    return <View style={{ width: EMPTY_ITEM_SIZE }} />;
+                                }
+
+                                // Zoom effect when in the middle
+                                const inputRange = [(index - 2) * ITEM_SIZE, (index - 1) * ITEM_SIZE, index * ITEM_SIZE];
+                                const scale = scrollX.interpolate({ inputRange, outputRange: [0.8, 1, 0.8], extrapolate: 'clamp', });
+                                const opacity = scrollX.interpolate({ inputRange, outputRange: [0.6, 1, 0.6], extrapolate: 'clamp', });
+
+                                return (
+                                    <View style={{ width: ITEM_SIZE }}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.9}
+                                            onPress={() => handleMoviePress(item, 'true')}
+                                            style={{ width: ITEM_SIZE }}
+                                        >
+                                            <Animated.View style={{ transform: [{ scale }], opacity, alignItems: 'center', }}>
+                                                <Image source={item.image}
+                                                    style={{ width: ITEM_SIZE, height: POSTER_HEIGHT, borderRadius: 15, backgroundColor: '#1a1d3d' }} />
+                                            </Animated.View>
+                                        </TouchableOpacity>
+                                    </View>
+                                );
+                            }}
                         />
                     </View>
-                    <View className="ml-4">
-                        <Text className="text-white text-[16px] font-bold uppercase text-center">
-                            Trung tâm chiếu phim quốc gia
-                        </Text>
-                        <Text className="text-white text-[14px] font-medium uppercase text-center">
-                            National Cinema Center
-                        </Text>
+                ) : (
+                    <View className="px-5 py-10 items-center justify-center">
+                        <Text className="text-gray-400 text-lg">Chưa có phim đang chiếu.</Text>
                     </View>
-                </View>
-            </View>
+                )}
 
-            {/* Movie are showing */}
-            <View className="flex-row items-center px-5 mb-6">
-                <View className="w-4 h-4 rounded-full bg-red-600 mr-2" />
-                <Text className="text-white text-[20px] font-semibold">Phim đang chiếu</Text>
-            </View>
-
-            {/* 2. Movie carousel */}
-            {realMovies.length > 0 ? (
-                <View>
-                    <Animated.FlatList
-                        ref={flatListRef}
-                        data={movies}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        keyExtractor={(item, index) => `${item.id}-${index}`}
-                        snapToInterval={ITEM_SIZE} // Stop point for each item
-                        snapToAlignment="start"    // Alignment point for stopping
-                        decelerationRate={Platform.OS === 'ios' ? 'fast' : 0.8}
-                        scrollEventThrottle={16}
-                        disableIntervalMomentum={true} // Only allow sliding one by one
-                        onScroll={onScroll}
-                        onScrollBeginDrag={stopAutoPlay} // Stop auto play when user touch
-                        onScrollEndDrag={startAutoPlay} // Start auto play when user stop touch
-                        contentContainerStyle={{ paddingHorizontal: 0 }}
-                        renderItem={({ item, index }) => {
-                            // If it's a dummy item
-                            if (!item.image) {
-                                return <View style={{ width: EMPTY_ITEM_SIZE }} />;
-                            }
-
-                            // Zoom effect when in the middle
-                            const inputRange = [(index - 2) * ITEM_SIZE, (index - 1) * ITEM_SIZE, index * ITEM_SIZE];
-                            const scale = scrollX.interpolate({ inputRange, outputRange: [0.8, 1, 0.8], extrapolate: 'clamp', });
-                            const opacity = scrollX.interpolate({ inputRange, outputRange: [0.6, 1, 0.6], extrapolate: 'clamp', });
-
-                            return (
-                                <View style={{ width: ITEM_SIZE }}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.9}
-                                        onPress={() => handleMoviePress(item, 'true')}
-                                        style={{ width: ITEM_SIZE }}
-                                    >
-                                        <Animated.View style={{ transform: [{ scale }], opacity, alignItems: 'center', }}>
-                                            <Image source={item.image}
-                                                style={{ width: ITEM_SIZE, height: POSTER_HEIGHT, borderRadius: 15, backgroundColor: '#1a1d3d' }} />
-                                        </Animated.View>
-                                    </TouchableOpacity>
+                {/* 3. Information Movie & Booking Button */}
+                {currentMovie && (
+                    <View className="px-6 mt-10 flex-row justify-between items-center">
+                        <View className="flex-1 mr-4 gap-2">
+                            <Text className="text-white text-2xl font-semibold">
+                                {currentMovie.title} - T{currentMovie.ageRating}
+                            </Text>
+                            <View className="flex-row items-center">
+                                <View className="border border-[#F472B6] rounded-md px-2 py-0.5">
+                                    <Text className="text-[#F472B6] font-bold text-lg">
+                                        {currentMovie.version}
+                                    </Text>
                                 </View>
-                            );
-                        }}
-                    />
-                </View>
-            ) : (
-                <View className="px-5 py-10 items-center justify-center">
-                    <Text className="text-gray-400 text-lg">Chưa có phim đang chiếu.</Text>
-                </View>
-            )}
-
-            {/* 3. Information Movie & Booking Button */}
-            {currentMovie && (
-                <View className="px-6 mt-10 flex-row justify-between items-center">
-                    <View className="flex-1 mr-4 gap-2">
-                        <Text className="text-white text-2xl font-semibold">
-                            {currentMovie.title} - T{currentMovie.ageRating}
-                        </Text>
-                        <View className="flex-row items-center">
-                            <View className="border border-[#F472B6] rounded-md px-2 py-0.5">
-                                <Text className="text-[#F472B6] font-bold text-lg">
-                                    {currentMovie.version}
-                                </Text>
                             </View>
+                            <Text className="text-gray-400 text-lg">
+                                {currentMovie.duration} - {new Date(currentMovie.date).toLocaleDateString('vi-VN')}
+                            </Text>
                         </View>
-                        <Text className="text-gray-400 text-lg">
-                            {currentMovie.duration} - {new Date(currentMovie.date).toLocaleDateString('vi-VN')}
-                        </Text>
+
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            className="bg-[#1e90ff] px-8 py-4 rounded-xl"
+                            onPress={() => handleMoviePress(currentMovie, 'true')}
+                        >
+                            <Text className="text-white font-bold text-[18px]">ĐẶT VÉ</Text>
+                        </TouchableOpacity>
                     </View>
+                )}
 
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        className="bg-[#1e90ff] px-8 py-4 rounded-xl"
-                        onPress={() => handleMoviePress(currentMovie, 'true')}
-                    >
-                        <Text className="text-white font-bold text-[18px]">ĐẶT VÉ</Text>
-                    </TouchableOpacity>
+                <View className="h-[1px] bg-gray-500/30 mx-6 my-6" />
+
+                {/* Movie are coming soon */}
+                <View className="flex-row items-center px-5 mb-6">
+                    <View className="w-4 h-4 rounded-full bg-red-600 mr-2" />
+                    <Text className="text-white text-[20px] font-semibold">Phim sắp chiếu</Text>
                 </View>
-            )}
 
-            <View className="h-[1px] bg-gray-500/30 mx-6 my-6" />
-
-            {/* Movie are coming soon */}
-            <View className="flex-row items-center px-5 mb-6">
-                <View className="w-4 h-4 rounded-full bg-red-600 mr-2" />
-                <Text className="text-white text-[20px] font-semibold">Phim sắp chiếu</Text>
-            </View>
-
-            {/* 4. Section movie are comming soon */}
-            {comingSoonMovies.length > 0 ? (
-                <View className="px-5">
-                    <FlatList
-                        data={comingSoonMovies}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        keyExtractor={(item) => item.id}
-                        contentContainerStyle={{ gap: 18 }}
-                        renderItem={({ item }) => (
-                            <MovieCard
-                                title={item.title}
-                                imageSource={item.image}
-                                version={item.version}
-                                duration={item.duration}
-                                date={item.date}
-                                ageRating={item.ageRating}
-                                width={width * 0.4}
-                                onPress={() => handleMoviePress(item, 'false')}
-                            />
-                        )}
-                    />
-                </View>) :
-                (<View className="px-5 py-10 items-center justify-center">
-                    <Text className="text-gray-400 text-lg">Chưa có phim sắp chiếu.</Text>
-                </View>)}
-        </ScrollView>
+                {/* 4. Section movie are comming soon */}
+                {comingSoonMovies.length > 0 ? (
+                    <View className="px-5">
+                        <FlatList
+                            data={comingSoonMovies}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item) => item.id}
+                            contentContainerStyle={{ gap: 18 }}
+                            renderItem={({ item }) => (
+                                <MovieCard
+                                    title={item.title}
+                                    imageSource={item.image}
+                                    version={item.version}
+                                    duration={item.duration}
+                                    date={item.date}
+                                    ageRating={item.ageRating}
+                                    width={width * 0.4}
+                                    onPress={() => handleMoviePress(item, 'false')}
+                                />
+                            )}
+                        />
+                    </View>) :
+                    (<View className="px-5 py-10 items-center justify-center">
+                        <Text className="text-gray-400 text-lg">Chưa có phim sắp chiếu.</Text>
+                    </View>)}
+            </ScrollView>
+        </View>
     );
 }

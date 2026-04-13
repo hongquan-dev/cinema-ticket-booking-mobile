@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
-import authService from '../../src/api/authService';
+import authService from '../../src/services/authService';
 import useConfirm from '../../src/hooks/useConfirm';
 
 // Reusable Menu Item Component
@@ -113,127 +113,129 @@ export default function AccountPage() {
         );
     }
     return (
-        <ScrollView className="flex-1 bg-[#272b50]" showsVerticalScrollIndicator={false}>
-            {/* Header Padding for Status Bar */}
-            <View className="px-5 pb-2 pt-14">
-                <StatusBar barStyle="light-content" />
-                {ConfirmComponent}
+        <View className="flex-1 bg-[#272b50] pt-14">
+            <ScrollView className="flex-1 bg-[#272b50]" showsVerticalScrollIndicator={false}>
+                {/* Header Padding for Status Bar */}
+                <View className="px-5 pb-2">
+                    <StatusBar barStyle="light-content" />
+                    {ConfirmComponent}
 
-                {isLoggedIn && (
-                    <View>
-                        {/* Top Section - General */}
-                        <MenuItem
-                            icon={<Ionicons name="notifications" size={22} color="white" />}
-                            title="Thông báo"
-                            iconBgColor="bg-pink-600"
-                        />
-                        <MenuItem
-                            icon={<MaterialCommunityIcons name="card-account-details" size={22} color="white" />}
-                            title="Thẻ thành viên U22"
-                            iconBgColor="bg-orange-500"
-                            isLast={true}
-                        />
-                    </View>
-                )}
+                    {isLoggedIn && (
+                        <View>
+                            {/* Top Section - General */}
+                            <MenuItem
+                                icon={<Ionicons name="notifications" size={22} color="white" />}
+                                title="Thông báo"
+                                iconBgColor="bg-pink-600"
+                            />
+                            <MenuItem
+                                icon={<MaterialCommunityIcons name="card-account-details" size={22} color="white" />}
+                                title="Thẻ thành viên U22"
+                                iconBgColor="bg-orange-500"
+                                isLast={true}
+                            />
+                        </View>
+                    )}
 
-                {isLoggedIn && (
-                    <View>
-                        {/* Account Section */}
-                        <SectionHeader title="Tài khoản" />
-                        <MenuItem
-                            icon={<Ionicons name="person" size={22} color="white" />}
-                            title="Thông tin tài khoản"
-                            iconBgColor="bg-blue-500"
-                        />
-                        <MenuItem
-                            icon={<MaterialCommunityIcons name="form-textbox-password" size={22} color="white" />}
-                            title="Đổi mật khẩu"
-                            iconBgColor="bg-amber-900"
-                        />
-                        <MenuItem
-                            icon={<MaterialCommunityIcons name="account-remove" size={22} color="white" />}
-                            title="Xóa tài khoản"
-                            iconBgColor="bg-red-500"
-                            isLast={true}
-                        />
-                    </View>
-                )}
-                <SectionHeader title="Hỗ trợ" />
-                <MenuItem
-                    icon={<Ionicons name="call" size={22} color="white" />}
-                    title="Hotline"
-                    subtitle="0865.205.608"
-                    iconBgColor="bg-indigo-600"
-                />
-                <MenuItem
-                    icon={<MaterialCommunityIcons name="chat" size={22} color="white" />}
-                    title="Zalo"
-                    subtitle="https://zalo.me/hongquan_dev"
-                    iconBgColor="bg-blue-400"
-                />
-
-                {isLoggedIn && (
-                    // Support Section
-                    < View >
-                        < MenuItem
-                            icon={<Ionicons name="people" size={22} color="white" />}
-                            title="Đặt vé nhóm, tập thể"
-                            iconBgColor="bg-slate-500"
-                            isLast={true}
-                        />
-                    </View>
-                )}
-
-
-                {/* Setting Section */}
-                <SectionHeader title="Cài đặt" />
-                <MenuItem
-                    icon={<Ionicons name="shield-checkmark" size={22} color="white" />}
-                    title="Điều khoản & chính sách"
-                    iconBgColor="bg-blue-500"
-                />
-                <MenuItem
-                    icon={<Ionicons name="business" size={22} color="white" />}
-                    title="Thông tin doanh nghiệp"
-                    iconBgColor="bg-green-600"
-                />
-
-                {isLoggedIn && (
+                    {isLoggedIn && (
+                        <View>
+                            {/* Account Section */}
+                            <SectionHeader title="Tài khoản" />
+                            <MenuItem
+                                icon={<Ionicons name="person" size={22} color="white" />}
+                                title="Thông tin tài khoản"
+                                iconBgColor="bg-blue-500"
+                            />
+                            <MenuItem
+                                icon={<MaterialCommunityIcons name="form-textbox-password" size={22} color="white" />}
+                                title="Đổi mật khẩu"
+                                iconBgColor="bg-amber-900"
+                            />
+                            <MenuItem
+                                icon={<MaterialCommunityIcons name="account-remove" size={22} color="white" />}
+                                title="Xóa tài khoản"
+                                iconBgColor="bg-red-500"
+                                isLast={true}
+                            />
+                        </View>
+                    )}
+                    <SectionHeader title="Hỗ trợ" />
                     <MenuItem
-                        icon={<Ionicons name="log-out" size={22} color="white" />}
-                        title="Đăng xuất"
-                        iconBgColor="bg-purple-600"
-                        isLast={true}
-                        onPress={handleLogout}
+                        icon={<Ionicons name="call" size={22} color="white" />}
+                        title="Hotline"
+                        subtitle="0865.205.608"
+                        iconBgColor="bg-indigo-600"
                     />
-                )}
+                    <MenuItem
+                        icon={<MaterialCommunityIcons name="chat" size={22} color="white" />}
+                        title="Zalo"
+                        subtitle="https://zalo.me/hongquan_dev"
+                        iconBgColor="bg-blue-400"
+                    />
 
-                {/* --- If not logged in --- */}
-                {!isLoggedIn && (
-                    <View className="flex-row justify-between px-5 mt-8 mb-5">
-                        <TouchableOpacity
-                            onPress={() => router.push('/(auth)/login')}
-                            className="bg-[#3bacef] flex-1 mr-2 py-3 rounded-xl items-center shadow-sm"
-                        >
-                            <Text className="text-white font-bold text-lg">Đăng nhập</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => router.push('/(auth)/signup')}
-                            className="bg-transparent border border-[#3bacef] flex-1 ml-2 py-3 rounded-xl items-center"
-                        >
-                            <Text className="text-[#3bacef] font-bold text-lg">Đăng ký</Text>
-                        </TouchableOpacity>
+                    {isLoggedIn && (
+                        // Support Section
+                        < View >
+                            < MenuItem
+                                icon={<Ionicons name="people" size={22} color="white" />}
+                                title="Đặt vé nhóm, tập thể"
+                                iconBgColor="bg-slate-500"
+                                isLast={true}
+                            />
+                        </View>
+                    )}
+
+
+                    {/* Setting Section */}
+                    <SectionHeader title="Cài đặt" />
+                    <MenuItem
+                        icon={<Ionicons name="shield-checkmark" size={22} color="white" />}
+                        title="Điều khoản & chính sách"
+                        iconBgColor="bg-blue-500"
+                    />
+                    <MenuItem
+                        icon={<Ionicons name="business" size={22} color="white" />}
+                        title="Thông tin doanh nghiệp"
+                        iconBgColor="bg-green-600"
+                    />
+
+                    {isLoggedIn && (
+                        <MenuItem
+                            icon={<Ionicons name="log-out" size={22} color="white" />}
+                            title="Đăng xuất"
+                            iconBgColor="bg-purple-600"
+                            isLast={true}
+                            onPress={handleLogout}
+                        />
+                    )}
+
+                    {/* --- If not logged in --- */}
+                    {!isLoggedIn && (
+                        <View className="flex-row justify-between px-5 mt-8 mb-5">
+                            <TouchableOpacity
+                                onPress={() => router.push('/(auth)/login')}
+                                className="bg-[#3bacef] flex-1 mr-2 py-3 rounded-xl items-center shadow-sm"
+                            >
+                                <Text className="text-white font-bold text-lg">Đăng nhập</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => router.push('/(auth)/signup')}
+                                className="bg-transparent border border-[#3bacef] flex-1 ml-2 py-3 rounded-xl items-center"
+                            >
+                                <Text className="text-[#3bacef] font-bold text-lg">Đăng ký</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+
+                    {/* Footer Info */}
+                    <View className="mt-2 items-center">
+                        <Text className="text-gray-400 text-sm">Phiên bản 1.0.0</Text>
+                        <Text className="text-gray-500 text-sm">
+                            Ứng dụng được phát triển bởi Nguyen Hong Quan
+                        </Text>
                     </View>
-                )}
-
-                {/* Footer Info */}
-                <View className="mt-2 items-center">
-                    <Text className="text-gray-400 text-sm">Phiên bản 1.0.0</Text>
-                    <Text className="text-gray-500 text-sm">
-                        Ứng dụng được phát triển bởi Nguyen Hong Quan
-                    </Text>
                 </View>
-            </View>
-        </ScrollView >
+            </ScrollView >
+        </View>
     );
 }

@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import showtimeApi from '../../src/api/showtimeApi';
 import ShowtimeCard from '../../src/components/card/ShowtimeCard';
+import showtimeApi from '../../src/services/showtimeApi';
 
 export default function SchedulePage() {
     const router = useRouter();
@@ -91,7 +91,7 @@ export default function SchedulePage() {
             {/* Showtime Card */}
             {loading ? (
                 <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator size="large" color="#db2777" />
+                    <ActivityIndicator size="large" color="#1e90ff" />
                 </View>
             ) : (
                 <FlatList

@@ -1,4 +1,4 @@
-import axiosClient from './axiosClient';
+import axiosClient from '../api/axiosClient';
 
 const movieApi = {
     getAll: (params) => {

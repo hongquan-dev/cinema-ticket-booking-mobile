@@ -3,9 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Dimensions, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
-import bookingApi from '../../src/api/bookingApi';
-import showtimeApi from '../../src/api/showtimeApi';
-import ticketPriceApi from '../../src/api/ticketPriceApi';
+import bookingApi from '../../src/services/bookingApi';
+import showtimeApi from '../../src/services/showtimeApi';
+import ticketPriceApi from '../../src/services/ticketPriceApi';
 import { CustomerType, SeatType } from '../../src/enums/ticketPriceEnums';
 import useConfirm from '../../src/hooks/useConfirm';
 
