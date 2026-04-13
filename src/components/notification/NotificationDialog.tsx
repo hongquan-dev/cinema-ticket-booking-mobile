@@ -35,14 +35,14 @@ export default function NotificationDialog({ title, message, type = 'info', onCl
                         </TouchableOpacity>
                     </View>
 
-                    <View className="px-5 pb-6">
-                        <Text className="text-gray-600 text-md leading-5">{message}</Text>
+                    <View className="px-5 pb-5">
+                        <Text className="text-gray-500 text-md leading-5">{message}</Text>
                     </View>
 
                     <View className="p-4 border-t border-gray-50 flex-row justify-end">
                         <TouchableOpacity
                             onPress={() => onClose(true)}
-                            className={`px-8 py-2.5 rounded-xl ${config.btnColor}`}
+                            className={`px-7 py-[11px] rounded-xl ${config.btnColor}`}
                         >
                             <Text className="text-white font-bold">Đồng ý</Text>
                         </TouchableOpacity>

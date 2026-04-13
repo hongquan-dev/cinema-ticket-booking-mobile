@@ -3,11 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Dimensions, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { CustomerType, SeatType } from '../../src/enums/ticketPriceEnums';
+import useConfirm from '../../src/hooks/useConfirm';
 import bookingApi from '../../src/services/bookingApi';
 import showtimeApi from '../../src/services/showtimeApi';
 import ticketPriceApi from '../../src/services/ticketPriceApi';
-import { CustomerType, SeatType } from '../../src/enums/ticketPriceEnums';
-import useConfirm from '../../src/hooks/useConfirm';
 
 const { width } = Dimensions.get('window');
 
@@ -91,7 +91,7 @@ const BookingPage = () => {
                         await fetchTicketPrices(stRes.data);
                     }
                 } catch (error) {
-                    console.error("Error loading data:", error);
+                    // console.error("Error loading data:", error);
                 }
             };
 
@@ -136,7 +136,7 @@ const BookingPage = () => {
                 ]);
             }
         } catch (error) {
-            console.error("Error fetching ticket prices:", error);
+            // console.error("Error fetching ticket prices:", error);
         }
     };
 

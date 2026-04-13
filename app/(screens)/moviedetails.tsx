@@ -88,7 +88,7 @@ const MovieDetails = () => {
                 <View style={{ height: POSTER_HEIGHT * 0.45 }} />
 
                 {/* Movie Detail Container */}
-                <View className="flex-1 bg-[#272b50] rounded-t-[25px] px-[25px] pt-[25px] shadow-black shadow-offset-[0px/-10px] shadow-opacity-30 shadow-radius-10 elevation-20">
+                <View className="flex-1 bg-[#272b50] rounded-t-[0px] px-[20px] pt-[20px] shadow-black shadow-offset-[0px/-10px] shadow-opacity-30 shadow-radius-10 elevation-20">
 
                     <View className="flex-row justify-between items-start mb-5">
                         <View className="flex-1 mr-[10px]">

@@ -134,6 +134,7 @@ export default function AccountPage() {
                                 title="Thẻ thành viên U22"
                                 iconBgColor="bg-orange-500"
                                 isLast={true}
+                                onPress={() => router.push('/(account)/membercard')}
                             />
                         </View>
                     )}

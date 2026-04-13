@@ -59,7 +59,7 @@ const SelectShowtime = () => {
                         }
                     }
                 } catch (error) {
-                    console.error("Error loading dates:", error);
+                    // console.error("Error loading dates:", error);
                 } finally {
                     setLoading(false);
                 }
@@ -98,7 +98,7 @@ const SelectShowtime = () => {
                         setTimeSlots([]);
                     }
                 } catch (error) {
-                    console.error("Error fetching showtimes:", error);
+                    // console.error("Error fetching showtimes:", error);
                 }
             };
 
