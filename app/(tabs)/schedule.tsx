@@ -73,7 +73,7 @@ export default function SchedulePage() {
         <View className="flex-1 bg-[#1a1d3d]">
             {/* Header Tabs */}
             <View className="bg-[#272b50] pt-16 pb-2">
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16 }}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 18 }}>
                     {currentDate.map((date, index) => (
                         <TouchableOpacity
                             key={index}

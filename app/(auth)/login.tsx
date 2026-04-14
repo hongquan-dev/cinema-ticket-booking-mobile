@@ -5,8 +5,8 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import authService from '../../src/services/authService';
 import useNotification from '../../src/hooks/useNotification';
+import authService from '../../src/services/authService';
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -76,6 +76,10 @@ export default function LoginScreen() {
         }
     };
 
+    const handleForgotPassword = async () => {
+        await notify("Thông báo", "Chưa hỗ trợ chức năng này", "info");
+    };
+
     return (
         <SafeAreaView className="flex-1 bg-[#232946]" edges={['top']}>
             {NotificationComponent}
@@ -120,7 +124,7 @@ export default function LoginScreen() {
                         {/* Username Input */}
                         <TextInput
                             placeholder="Tên đăng nhập"
-                            className="bg-gray-50 border border-gray-100 p-4 rounded-2xl w-full mb-4 text-gray-800"
+                            className="bg-gray-50 border border-gray-100 px-4 py-[16px] rounded-2xl w-full mb-4 text-gray-800"
                             onChangeText={(v) => setForm({ ...form, username: v })}
                             autoCorrect={false}
                             autoCapitalize="none"
@@ -147,14 +151,14 @@ export default function LoginScreen() {
                             >
                                 <Ionicons
                                     name={rememberMe ? "checkbox" : "square-outline"}
-                                    size={20}
+                                    size={22}
                                     color={rememberMe ? "#3bacef" : "gray"}
                                 />
-                                <Text className="ml-2 text-gray-600 text-sm">Nhớ mật khẩu</Text>
+                                <Text className="ml-2 text-gray-600 text-md">Nhớ mật khẩu</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity>
-                                <Text className="text-[#3bacef] text-sm font-semibold">Quên mật khẩu?</Text>
+                            <TouchableOpacity onPress={handleForgotPassword}>
+                                <Text className="text-[#3bacef] text-md font-semibold">Quên mật khẩu?</Text>
                             </TouchableOpacity>
                         </View>
 

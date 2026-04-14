@@ -115,7 +115,7 @@ const SelectShowtime = () => {
     }
 
     return (
-        <View className="flex-1 bg-[#272b50] pb-2">
+        <View className="flex-1 bg-[#272b50] pb-1">
             <StatusBar barStyle="light-content" />
             <Modal
                 animationType="fade"

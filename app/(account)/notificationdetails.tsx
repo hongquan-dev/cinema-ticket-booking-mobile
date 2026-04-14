@@ -25,7 +25,7 @@ const NewsDetails = () => {
     }
 
     return (
-        <View className="flex-1 bg-[#1a1d3d]">
+        <View className="flex-1 bg-[#272b50]">
             <StatusBar barStyle="light-content" />
 
             {/* Custom Header */}
@@ -52,7 +52,7 @@ const NewsDetails = () => {
                     {/* Category Tag & Time */}
                     <View className="flex-row items-center mb-3">
                         <View className="bg-pink-600 px-2 py-1 rounded">
-                            <Text className="text-white text-[12px] font-bold uppercase">
+                            <Text className="text-white text-[14px] font-bold uppercase">
                                 {PostLabel[category as keyof typeof PostLabel] || 'Tin tức'}
                             </Text>
                         </View>
@@ -74,12 +74,12 @@ const NewsDetails = () => {
                     )}
 
                     {/* Main Content Body */}
-                    <Text className="text-gray-300 text-base leading-6 text-justify">
+                    <Text className="text-gray-300 text-[15px] leading-6 text-justify">
                         {content}
                     </Text>
 
                     <View className="flex-row justify-end w-full mt-2">
-                        <Text className="text-gray-400 text-md italic">
+                        <Text className="text-gray-400 text-[14px] italic">
                             {formatDate(createAt)}
                         </Text>
                     </View>

@@ -318,7 +318,7 @@ const BookingPage = () => {
             </ScrollView>
 
             {/* FOOTER */}
-            <View className="bg-[#272b50] border-t border-white/10 p-5 pb-10">
+            <View className="bg-[#272b50] border-t border-white/10 p-5 pb-8">
                 <Text className="text-white text-2xl font-semibold mb-1">
                     {showtime.data.movie.movieName} - T{showtime.data.movie.ageRating}
                 </Text>

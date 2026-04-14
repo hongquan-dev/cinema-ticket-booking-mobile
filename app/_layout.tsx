@@ -31,6 +31,10 @@ export default function Layout() {
         {/* Group Account */}
         <Stack.Screen name="(account)/notifications" />
         <Stack.Screen name="(account)/notificationdetails" />
+        <Stack.Screen name="(account)/profile" />
+        <Stack.Screen name="(account)/changepassword" />
+        <Stack.Screen name="(account)/terms_policy" />
+        <Stack.Screen name="(account)/business_info" />
 
       </Stack>
     </SafeAreaProvider>

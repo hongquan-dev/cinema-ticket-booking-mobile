@@ -2,8 +2,9 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Linking, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import useConfirm from '../../src/hooks/useConfirm';
+import useNotification from '../../src/hooks/useNotification';
 import authService from '../../src/services/authService';
 
 // Reusable Menu Item Component
@@ -48,6 +49,7 @@ export default function AccountPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const { confirm, ConfirmComponent } = useConfirm();
+    const { notify, NotificationComponent } = useNotification();
 
     const clearUserData = async () => {
         const keys = [
@@ -105,6 +107,25 @@ export default function AccountPage() {
         }
     };
 
+    const handleCallPress = async (phoneNumber: string) => {
+        const cleanedNumber = phoneNumber.replace(/\s/g, '');
+        const url = `tel:${cleanedNumber}`;
+
+        try {
+            await Linking.openURL(url);
+        } catch (error) {
+            console.error("Failed to open dialer:", error);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        await notify("Thông báo", "Tính năng này sẽ sớm ra mắt", "info");
+    };
+
+    const handleGroupBooking = async () => {
+        await notify("Thông báo", "Tính năng này sẽ sớm ra mắt", "info");
+    };
+
     if (isLoading) {
         return (
             <View className="flex-1 bg-[#272b50] justify-center items-center">
@@ -119,6 +140,7 @@ export default function AccountPage() {
                 <View className="px-5 pb-2">
                     <StatusBar barStyle="light-content" />
                     {ConfirmComponent}
+                    {NotificationComponent}
 
                     {isLoggedIn && (
                         <View>
@@ -147,17 +169,20 @@ export default function AccountPage() {
                                 icon={<Ionicons name="person" size={22} color="white" />}
                                 title="Thông tin tài khoản"
                                 iconBgColor="bg-blue-500"
+                                onPress={() => router.push('/(account)/profile')}
                             />
                             <MenuItem
                                 icon={<MaterialCommunityIcons name="form-textbox-password" size={22} color="white" />}
                                 title="Đổi mật khẩu"
                                 iconBgColor="bg-amber-900"
+                                onPress={() => router.push('/(account)/changepassword')}
                             />
                             <MenuItem
                                 icon={<MaterialCommunityIcons name="account-remove" size={22} color="white" />}
                                 title="Xóa tài khoản"
                                 iconBgColor="bg-red-500"
                                 isLast={true}
+                                onPress={handleDeleteAccount}
                             />
                         </View>
                     )}
@@ -167,12 +192,18 @@ export default function AccountPage() {
                         title="Hotline"
                         subtitle="0865.205.608"
                         iconBgColor="bg-indigo-600"
+                        onPress={() => handleCallPress('0865205608')}
                     />
                     <MenuItem
                         icon={<MaterialCommunityIcons name="chat" size={22} color="white" />}
                         title="Zalo"
                         subtitle="https://zalo.me/hongquan_dev"
                         iconBgColor="bg-blue-400"
+                        onPress={() => {
+                            Linking.openURL('https://zalo.me/0865205608').catch(err =>
+                                console.error("Couldn't load page", err)
+                            );
+                        }}
                     />
 
                     {isLoggedIn && (
@@ -183,6 +214,7 @@ export default function AccountPage() {
                                 title="Đặt vé nhóm, tập thể"
                                 iconBgColor="bg-slate-500"
                                 isLast={true}
+                                onPress={handleGroupBooking}
                             />
                         </View>
                     )}
@@ -192,13 +224,15 @@ export default function AccountPage() {
                     <SectionHeader title="Cài đặt" />
                     <MenuItem
                         icon={<Ionicons name="shield-checkmark" size={22} color="white" />}
-                        title="Điều khoản & chính sách"
-                        iconBgColor="bg-blue-500"
+                        title="Điều khoản & Chính sách"
+                        iconBgColor="bg-sky-600"
+                        onPress={() => router.push('/(account)/terms_policy')}
                     />
                     <MenuItem
                         icon={<Ionicons name="business" size={22} color="white" />}
                         title="Thông tin doanh nghiệp"
                         iconBgColor="bg-green-600"
+                        onPress={() => router.push('/(account)/business_info')}
                     />
 
                     {isLoggedIn && (

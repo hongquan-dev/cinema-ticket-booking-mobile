@@ -20,7 +20,7 @@ const ShowtimeCard: React.FC<ShowtimeCardProps> = ({
     onPressShowtime
 }) => {
     return (
-        <View className="flex-row p-4 border-b border-white/20" style={{ borderBottomWidth: 1.5, borderStyle: 'dashed' }} >
+        <View className="flex-row py-4 px-5 border-b border-white/20" style={{ borderBottomWidth: 1.5, borderStyle: 'dashed' }} >
             {/* Movie poster */}
             <Image
                 source={{ uri: poster }}

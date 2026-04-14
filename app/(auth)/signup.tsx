@@ -3,8 +3,8 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import authService from '../../src/services/authService';
 import useNotification from '../../src/hooks/useNotification';
+import authService from '../../src/services/authService';
 
 export default function SignUpScreen() {
     const router = useRouter();

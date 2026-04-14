@@ -13,7 +13,7 @@ const MemberCard = () => {
     const POSTER_HEIGHT = height * 0.5;
 
     const handleClick = async () => {
-        await notify("Thông báo", "Hiện tính năng này chưa được hỗ trợ", "info");
+        await notify("Thông báo", "Tính năng này sẽ sớm ra mắt", "info");
     }
 
     return (
