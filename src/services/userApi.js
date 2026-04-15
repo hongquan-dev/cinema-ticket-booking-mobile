@@ -24,6 +24,11 @@ const userApi = {
                 'Content-Type': 'multipart/form-data',
             },
         });
+    },
+
+    sendVerificationEmail: (id) => {
+        const url = `/users/${id}/send-verification`;
+        return axiosClient.post(url);
     }
 };
 

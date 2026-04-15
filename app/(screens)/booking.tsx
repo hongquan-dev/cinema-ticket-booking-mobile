@@ -327,7 +327,7 @@ const BookingPage = () => {
                     <View className="border border-pink-500 px-2 py-0.5 rounded">
                         <Text className="text-pink-500 text-md font-bold">{showtime.data.room.roomType}</Text>
                     </View>
-                    <Text className="text-white text-lg font-bold italic">{showtime.data.room.name}</Text>
+                    <Text className="text-white text-lg font-medium italic">{showtime.data.room.name}</Text>
                 </View>
 
                 <View className="flex-row items-center justify-between">

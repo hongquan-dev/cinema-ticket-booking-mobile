@@ -158,6 +158,7 @@ const EditProfile = () => {
 
             // Call API updateAvatar
             const response: any = await userApi.updateAvatar(userId, formData);
+            notify("Thông báo", "Ảnh đại diện đang thay đổi...", "info");
 
             // Update UI with new avatar link from Cloudinary
             if (response && response.data) {
@@ -167,6 +168,20 @@ const EditProfile = () => {
 
         } catch (error: any) {
             await notify("Lỗi", "Không thể tải ảnh lên server", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSendVerificationEmail = async () => {
+        setLoading(true);
+        try {
+            const response: any = await userApi.sendVerificationEmail(userId);
+            if (response && response.message) {
+                await notify("Thành công", "Email xác thực đã được gửi", "success");
+            }
+        } catch (error: any) {
+            await notify("Lỗi", "Không thể gửi email xác thực", "error");
         } finally {
             setLoading(false);
         }
@@ -267,15 +282,25 @@ const EditProfile = () => {
                     />
 
                     {/* Verify Status & Join Date */}
-                    <View className="flex-row justify-between items-center mt-6 bg-gray-800 rounded-xl px-5 py-4 border border-gray-600">
+                    <View className="flex-row justify-between items-center mt-6 bg-gray-800 rounded-xl border border-gray-600">
                         <View className="flex-row items-center">
-                            <View className={`w-4 h-4 rounded-full mr-2 ${verified ? 'bg-green-500' : 'bg-red-500'}`} />
-                            <Text className={`font-bold text-lg ${verified ? 'text-green-500' : 'text-red-500'}`}>
-                                {verified ? 'Đã xác thực' : 'Chưa xác thực'}
-                            </Text>
+                            {verified ? (
+                                <>
+                                    <View className="w-4 h-4 rounded-full mr-2 ml-5 my-4 bg-green-500" />
+                                    <Text className="font-bold text-lg text-green-500">Đã xác thực</Text>
+                                </>
+                            ) : (
+                                <TouchableOpacity
+                                    className="bg-red-500 rounded-lg py-3 px-4 ml-2"
+                                    onPress={handleSendVerificationEmail}
+                                    disabled={loading}
+                                >
+                                    <Text className="font-bold text-white text-[16px]">Xác thực ngay</Text>
+                                </TouchableOpacity>
+                            )}
                         </View>
                         <View className="flex-row items-center">
-                            <Text className="text-white font-medium text-lg">{createdAt}</Text>
+                            <Text className="text-white font-medium text-lg mr-5 my-4">{createdAt}</Text>
                         </View>
                     </View>
 
@@ -289,7 +314,7 @@ const EditProfile = () => {
                     <TouchableOpacity
                         disabled={!isFormValid || loading}
                         onPress={handleSave}
-                        className={`py-4 rounded-xl items-center ${isFormValid ? 'bg-[#1e90ff]' : 'bg-gray-400'}`}
+                        className={`py-4 rounded-xl items-center ${isFormValid && !loading ? 'bg-[#1e90ff]' : 'bg-gray-400'}`}
                     >
                         <Text className={`text-white font-bold text-xl`}>
                             Cập nhật
