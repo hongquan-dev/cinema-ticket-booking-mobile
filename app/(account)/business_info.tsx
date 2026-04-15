@@ -19,7 +19,7 @@ const BusinessInfo = () => {
             </View>
 
             <ScrollView className="flex-1 px-5 pt-4 pb-10" showsVerticalScrollIndicator={false}>
-                <View className="bg-[#1e2340] rounded-xl p-5 border border-gray-600 shadow-xl">
+                <View className="bg-[#272b50] rounded-xl p-5 border border-gray-600 shadow-xl">
                     <Text className="text-white text-[18px] font-bold text-center mb-6 uppercase">
                         Trung tâm chiếu phim quốc gia
                     </Text>

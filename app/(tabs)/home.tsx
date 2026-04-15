@@ -176,7 +176,7 @@ export default function HomePage() {
         if (!movie) return;
 
         router.push({
-            pathname: "/(screens)/moviedetails",
+            pathname: "/(details)/moviedetails",
             params: {
                 id: movie.id,
                 roomType: movie.roomType,

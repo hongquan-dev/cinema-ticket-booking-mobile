@@ -77,7 +77,7 @@ export default function NewsPage() {
                             time={formatTime(item.createdAt)}
                             imageUri={item.thumbnailUrl} // Ensure this field matches your Post model
                             onPress={() => router.push({
-                                pathname: '/(screens)/newsdetails',
+                                pathname: '/(details)/newsdetails',
                                 params: {
                                     id: item.id,
                                     category: item.category,

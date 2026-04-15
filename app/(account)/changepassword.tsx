@@ -1,6 +1,7 @@
 import useNotification from '@/src/hooks/useNotification';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -10,12 +11,14 @@ const ChangePassword = () => {
     const router = useRouter();
     const params = useLocalSearchParams();
     const [userId, setUserId] = useState<string>('');
+    const [avatar, setAvatar] = useState<string>('');
 
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [fetching, setFetching] = useState(true);
+    const [loading, setLoading] = useState(false);
     const { notify, NotificationComponent } = useNotification();
 
     const isFormValid =
@@ -32,6 +35,10 @@ const ChangePassword = () => {
 
                     if (storeUserId) {
                         setUserId(storeUserId);
+                        const response: any = await userApi.getById(storeUserId);
+                        if (response && response.data) {
+                            setAvatar(response.data.avatar || '');
+                        }
                     }
                 } catch (error) {
                 } finally {
@@ -43,9 +50,63 @@ const ChangePassword = () => {
         }, [])
     );
 
-    const hanleEditAvatar = async () => {
-        await notify("Tính năng", "Tính năng này sẽ sớm ra mắt", "info");
-    }
+    const handleEditAvatar = async () => {
+        // Request permission to access image library
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (status !== 'granted') {
+            await notify("Quyền truy cập", "Bạn cần cấp quyền truy cập thư viện ảnh để thực hiện tính năng này", "warning");
+            return;
+        }
+
+        // Open image library
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true, // Allow crop image
+            aspect: [1, 1],      // Square aspect ratio for avatar
+            quality: 0.8,        // Compress image slightly for faster upload
+        });
+
+        if (!result.canceled) {
+            const selectedImageUri = result.assets[0].uri;
+
+            // Upload image
+            await uploadAvatar(selectedImageUri);
+        }
+    };
+
+    const uploadAvatar = async (uri: string) => {
+        setLoading(true);
+        try {
+            const formData = new FormData();
+
+            // Create file for FormData
+            const filename = uri.split('/').pop();
+            const match = /\.(\w+)$/.exec(filename || '');
+            const type = match ? `image/${match[1]}` : `image`;
+
+            // @ts-ignore
+            formData.append('file', {
+                uri: uri,
+                name: filename || 'avatar.jpg',
+                type: type,
+            });
+
+            // Call API updateAvatar
+            const response: any = await userApi.updateAvatar(userId, formData);
+
+            // Update UI with new avatar link from Cloudinary
+            if (response && response.data) {
+                setAvatar(response.data.avatar);
+                await notify("Thành công", "Cập nhật ảnh đại diện thành công!", "success");
+            }
+
+        } catch (error: any) {
+            await notify("Lỗi", "Không thể tải ảnh lên server", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleSave = async () => {
         if (newPassword !== confirmPassword) {
@@ -120,16 +181,23 @@ const ChangePassword = () => {
                     {/* --- Avatar --- */}
                     <View className="items-center">
                         <View className="relative w-44 h-44">
+                            {loading && (
+                                <View className="absolute inset-0 z-20 bg-black/40 rounded-full items-center justify-center">
+                                    <ActivityIndicator color="white" />
+                                </View>
+                            )}
+
                             <Image
-                                source={require('../../assets/images/Quannn.jpg')}
+                                source={avatar ? { uri: avatar } : require('../../assets/default_avatar.jpg')}
                                 className="w-full h-full rounded-full border-4 border-gray-600"
                                 resizeMode="cover"
                             />
 
                             <TouchableOpacity
-                                className="absolute bottom-0 right-[5px] bg-[#3bacef] w-11 h-11 rounded-full items-center justify-center shadow-lg"
+                                className="absolute bottom-0 right-[5px] bg-[#3bacef] w-11 h-11 rounded-full z-30 items-center justify-center shadow-lg"
                                 activeOpacity={0.8}
-                                onPress={hanleEditAvatar}
+                                onPress={handleEditAvatar}
+                                disabled={loading}
                             >
                                 <Ionicons name="camera" size={24} color="white" />
                             </TouchableOpacity>

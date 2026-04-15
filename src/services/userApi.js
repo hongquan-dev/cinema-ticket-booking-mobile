@@ -15,6 +15,15 @@ const userApi = {
     changePassword: (userId, passwordData) => {
         const url = `/users/change-password/${userId}`;
         return axiosClient.post(url, passwordData);
+    },
+
+    updateAvatar: (id, formData) => {
+        const url = `/users/${id}/avatar`;
+        return axiosClient.put(url, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
     }
 };
 

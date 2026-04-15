@@ -1,6 +1,7 @@
 import useNotification from '@/src/hooks/useNotification';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -16,10 +17,12 @@ const EditProfile = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
+    const [avatar, setAvatar] = useState('');
     const [verified, setVerified] = useState(false);
     const [createdAt, setCreatedAt] = useState('');
 
     const [fetching, setFetching] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [validate, setValidate] = useState(false);
     const { notify, NotificationComponent } = useNotification();
 
@@ -46,6 +49,7 @@ const EditProfile = () => {
                             setPhoneNumber(data.phoneNumber || '');
                             setEmail(data.email || '');
                             setAddress(data.address || '');
+                            setAvatar(data.avatar || '');
                             setVerified(data.verified || false);
 
                             if (data.createdAt) {
@@ -69,6 +73,7 @@ const EditProfile = () => {
     );
 
     const handleSave = async () => {
+        setLoading(true);
         try {
             // Phone validation (Must be exactly 10 digits)
             const phoneRegex = /^\d{10}$/;
@@ -92,8 +97,8 @@ const EditProfile = () => {
             };
 
             const response: any = await userApi.update(userId, updateData);
+
             await notify("Thành công", "Cập nhật thông tin thành công!", "success");
-            router.back();
         } catch (error: any) {
             if (error.toString() === "Email already exists in the system") {
                 await notify("Lỗi", "Email đã có người sử dụng", "error");
@@ -104,12 +109,68 @@ const EditProfile = () => {
             else {
                 await notify("Lỗi", "Cập nhật thất bại", "error");
             }
+        } finally {
+            setLoading(false);
         }
     };
 
-    const hanleEditAvatar = async () => {
-        await notify("Tính năng", "Tính năng này sẽ sớm ra mắt", "info");
-    }
+    const handleEditAvatar = async () => {
+        // Request permission to access image library
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (status !== 'granted') {
+            await notify("Quyền truy cập", "Bạn cần cấp quyền truy cập thư viện ảnh để thực hiện tính năng này", "warning");
+            return;
+        }
+
+        // Open image library
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true, // Allow crop image
+            aspect: [1, 1],      // Square aspect ratio for avatar
+            quality: 0.8,        // Compress image slightly for faster upload
+        });
+
+        if (!result.canceled) {
+            const selectedImageUri = result.assets[0].uri;
+
+            // Upload image
+            await uploadAvatar(selectedImageUri);
+        }
+    };
+
+    const uploadAvatar = async (uri: string) => {
+        setLoading(true);
+        try {
+            const formData = new FormData();
+
+            // Create file for FormData
+            const filename = uri.split('/').pop();
+            const match = /\.(\w+)$/.exec(filename || '');
+            const type = match ? `image/${match[1]}` : `image`;
+
+            // @ts-ignore
+            formData.append('file', {
+                uri: uri,
+                name: filename || 'avatar.jpg',
+                type: type,
+            });
+
+            // Call API updateAvatar
+            const response: any = await userApi.updateAvatar(userId, formData);
+
+            // Update UI with new avatar link from Cloudinary
+            if (response && response.data) {
+                setAvatar(response.data.avatar);
+                await notify("Thành công", "Cập nhật ảnh đại diện thành công!", "success");
+            }
+
+        } catch (error: any) {
+            await notify("Lỗi", "Không thể tải ảnh lên server", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const InputLabel = ({ label }: { label: string }) => (
         <Text className="text-white text-[16px] font-medium mb-2 mt-4">{label}</Text>
@@ -138,16 +199,23 @@ const EditProfile = () => {
                     {/* --- Avatar --- */}
                     <View className="items-center">
                         <View className="relative w-44 h-44">
+                            {loading && (
+                                <View className="absolute inset-0 z-20 bg-black/40 rounded-full items-center justify-center">
+                                    <ActivityIndicator color="white" />
+                                </View>
+                            )}
+
                             <Image
-                                source={require('../../assets/images/Quannn.jpg')}
+                                source={avatar ? { uri: avatar } : require('../../assets/default_avatar.jpg')}
                                 className="w-full h-full rounded-full border-4 border-gray-600"
                                 resizeMode="cover"
                             />
 
                             <TouchableOpacity
-                                className="absolute bottom-0 right-[5px] bg-[#3bacef] w-11 h-11 rounded-full items-center justify-center shadow-lg"
+                                className="absolute bottom-0 right-[5px] bg-[#3bacef] w-11 h-11 rounded-full z-30 items-center justify-center shadow-lg"
                                 activeOpacity={0.8}
-                                onPress={hanleEditAvatar}
+                                onPress={handleEditAvatar}
+                                disabled={loading}
                             >
                                 <Ionicons name="camera" size={24} color="white" />
                             </TouchableOpacity>
@@ -219,7 +287,7 @@ const EditProfile = () => {
             {!fetching && (
                 <View className="px-5 pb-6 bg-[#272b50]">
                     <TouchableOpacity
-                        disabled={!isFormValid}
+                        disabled={!isFormValid || loading}
                         onPress={handleSave}
                         className={`py-4 rounded-xl items-center ${isFormValid ? 'bg-[#1e90ff]' : 'bg-gray-400'}`}
                     >

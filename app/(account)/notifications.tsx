@@ -86,7 +86,7 @@ export default function NotificationsPage() {
                             time={formatTime(item.createdAt)}
                             imageUri={item.thumbnailUrl} // Ensure this field matches your Post model
                             onPress={() => router.push({
-                                pathname: '/(account)/notificationdetails',
+                                pathname: '/(details)/notificationdetails',
                                 params: {
                                     id: item.id,
                                     category: item.category,

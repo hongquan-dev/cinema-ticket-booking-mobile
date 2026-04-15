@@ -22,15 +22,15 @@ export default function Layout() {
         <Stack.Screen name="(auth)/signup" />
 
         {/* Group Screens */}
-        <Stack.Screen name="(screens)/moviedetails" />
+        <Stack.Screen name="(details)/moviedetails" />
         <Stack.Screen name="(screens)/selectshowtime" />
         <Stack.Screen name="(screens)/booking" />
         <Stack.Screen name="(screens)/payment" />
-        <Stack.Screen name="(screens)/newsdetails" />
+        <Stack.Screen name="(details)/newsdetails" />
 
         {/* Group Account */}
         <Stack.Screen name="(account)/notifications" />
-        <Stack.Screen name="(account)/notificationdetails" />
+        <Stack.Screen name="(details)/notificationdetails" />
         <Stack.Screen name="(account)/profile" />
         <Stack.Screen name="(account)/changepassword" />
         <Stack.Screen name="(account)/terms_policy" />
