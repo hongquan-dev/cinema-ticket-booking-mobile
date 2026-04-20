@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, FlatList, Image, Platform, ScrollView, StatusBar, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { MovieCard } from '../../src/components/card/MovieCard';
 import movieApi from '../../src/services/movieApi';
+import movieShowDateApi from '../../src/services/movieShowDateApi';
 import showtimeApi from '../../src/services/showtimeApi';
 
 export default function HomePage() {
@@ -25,7 +26,8 @@ export default function HomePage() {
 
     // Current date and cinema id
     const cinemaId = '78dd3402-6e25-4534-b289-673340392d92';
-    const currentDate = ['2026-03-25', '2026-03-26', '2026-03-27', '2026-03-28'];
+    const DEFAULT_DATES = ['2026-01-01', '2026-01-02', '2026-01-03', '2026-01-04'];
+    const [currentDate, setCurrentDate] = useState<string[]>(DEFAULT_DATES);
     const [movies, setMovies] = useState<any[]>([]);
     const [comingSoonMovies, setComingSoonMovies] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -72,10 +74,11 @@ export default function HomePage() {
     };
 
     // Call api for fetch Showing Movies 
-    const fetchShowingMovies = async () => {
+    const fetchShowingMovies = async (dates: string[]) => {
         try {
-            const response = await showtimeApi.getGrouped(cinemaId, currentDate[0]);
-            await AsyncStorage.setItem('currentDate', JSON.stringify(currentDate));
+            if (dates.length === 0) return;
+            const response = await showtimeApi.getGrouped(cinemaId, dates[0]);
+            await AsyncStorage.setItem('currentDate', JSON.stringify(dates));
             await AsyncStorage.setItem('cinemaId', JSON.stringify(cinemaId));
 
             const mappedMovies = response.data.map((item: any) => ({
@@ -105,10 +108,11 @@ export default function HomePage() {
     };
 
     // Call api for fetch Coming Soon Movies
-    const fetchComingSoonMovies = async () => {
+    const fetchComingSoonMovies = async (dates: string[]) => {
         try {
-            const response = await movieApi.getComingSoon(currentDate);
-            await AsyncStorage.setItem('currentDate', JSON.stringify(currentDate));
+            if (dates.length === 0) return;
+            const response = await movieApi.getComingSoon(dates);
+            await AsyncStorage.setItem('currentDate', JSON.stringify(dates));
             await AsyncStorage.setItem('cinemaId', JSON.stringify(cinemaId));
 
             const mapped = response.data.map((item: any) => ({
@@ -141,11 +145,26 @@ export default function HomePage() {
             }
 
             const fetchData = async () => {
-                await Promise.all([
-                    fetchShowingMovies(),
-                    fetchComingSoonMovies()
-                ]);
-                setLoading(false);
+                try {
+                    const dateResponse = await movieShowDateApi.getAll();
+                    let dates = dateResponse.data.map((item: any) => item.showDate);
+
+                    if (!dates || dates.length === 0) {
+                        dates = DEFAULT_DATES;
+                    }
+
+                    setCurrentDate(dates);
+                    await AsyncStorage.setItem('currentDate', JSON.stringify(dates));
+
+                    await Promise.all([
+                        fetchShowingMovies(dates),
+                        fetchComingSoonMovies(dates)
+                    ]);
+                } catch (error) {
+                    console.error("Error fetching dates:", error);
+                } finally {
+                    setLoading(false);
+                }
             };
             fetchData();
             return () => stopAutoPlay();
