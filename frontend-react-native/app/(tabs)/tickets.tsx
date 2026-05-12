@@ -7,7 +7,7 @@ export default function TicketsPage() {
             <View>
                 <Text className="text-2xl font-bold text-white">Trang vé đã mua</Text>
                 <Text className="text-gray-400 mt-2 text-center">
-                    Chào mừng bạn đến với NCC Cinema
+                    Hiện chưa có vé nào!
                 </Text>
             </View>
         </View>
