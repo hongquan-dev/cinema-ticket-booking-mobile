@@ -24,7 +24,7 @@ public class JwtUtil {
 
     // Access Token: 15 minutes
     public String generateAccessToken(String username) {
-        return buildToken(new HashMap<>(), username, 1000L * 60 * 30);
+        return buildToken(new HashMap<>(), username, 1000L * 60 * 3);
     }
 
     // Refresh Token: 7 days if user remembers password
