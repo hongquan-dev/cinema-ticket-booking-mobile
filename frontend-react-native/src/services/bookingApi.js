@@ -11,18 +11,14 @@ const bookingApi = {
         return axiosClient.post(url, bookingData);
     },
 
-    getUserTickets: (userId, page = 1, size = 10) => {
-        const url = `/bookings/user/${userId}`;
-        return axiosClient.get(url, {
-            params: { page, size }
-        });
+    getUserTickets: (userId) => {
+        const url = `/bookings/my-tickets/${userId}`;
+        return axiosClient.get(url);
     },
 
-    cancelTicket: (ticketId, userId) => {
-        const url = `/bookings/${ticketId}`;
-        return axiosClient.delete(url, {
-            params: { userId }
-        });
+    cancelTicket: (orderCode) => {
+        const url = `/bookings/cancel/${orderCode}`;
+        return axiosClient.put(url);
     }
 };
 

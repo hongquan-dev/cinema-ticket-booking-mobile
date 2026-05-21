@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
-import bookingApi from '../../src/services/bookingApi';
 import useConfirm from '../../src/hooks/useConfirm';
+import bookingApi from '../../src/services/bookingApi';
 
 const PaymentOption = ({
     id,

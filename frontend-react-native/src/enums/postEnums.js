@@ -1,4 +1,3 @@
-
 export const PostCategory = {
     NEWS: 'NEWS',
     PROMOTION: 'PROMOTION',
