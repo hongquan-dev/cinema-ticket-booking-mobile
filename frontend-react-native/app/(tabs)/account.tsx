@@ -2,7 +2,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, Linking, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import useConfirm from '../../src/hooks/useConfirm';
 import useNotification from '../../src/hooks/useNotification';
 import authService from '../../src/services/authService';
@@ -25,23 +25,33 @@ const MenuItem = ({
 }) => (
     <TouchableOpacity
         onPress={onPress}
-        className={`flex-row items-center py-4 ${!isLast ? 'border-b border-gray-700' : ''}`}
+        activeOpacity={0.6}
+        className={`flex-row items-center px-4 py-3.5 rounded-lg mb-2 border border-white/5 hover:bg-[#252d4a] transition-colors`}
     >
-        <View className={`w-12 h-12 rounded-md items-center justify-center ${iconBgColor}`}>
+        <View className={`w-12 h-12 rounded-lg items-center justify-center ${iconBgColor}`}>
             {icon}
         </View>
         <View className="flex-1 ml-4 flex-row justify-between items-center">
-            <Text className="text-white text-xl">{title}</Text>
-            {subtitle && <Text className="text-gray-400 text-lg">{subtitle}</Text>}
+            <View className="flex-1">
+                <Text className="text-white text-lg font-semibold">{title}</Text>
+                {subtitle && <Text className="text-gray-400 text-[13px]">{subtitle}</Text>}
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
         </View>
     </TouchableOpacity>
 );
 
 // Section Header Component
-const SectionHeader = ({ title }: { title: string }) => (
-    <Text className="text-white font-bold text-xl mt-6 mb-2 uppercase tracking-wider">
-        {title}
-    </Text>
+const SectionHeader = ({ title, isSmallMargin = false }: { title: string, isSmallMargin?: boolean }) => (
+    <View className={isSmallMargin ? "mt-1" : "mt-4"}>
+        <View className="flex-row items-center">
+            <View className="w-1 h-6 bg-[#1e90ff] rounded-full mr-2" />
+            <Text className="text-white font-bold text-[18px] tracking-wide">
+                {title}
+            </Text>
+        </View>
+        <View className="h-0.5 bg-gradient-to-r from-[#1e90ff]/30 to-transparent mt-2 rounded-full" />
+    </View>
 );
 
 export default function AccountPage() {
@@ -51,6 +61,13 @@ export default function AccountPage() {
     const { confirm, ConfirmComponent } = useConfirm();
     const { notify, NotificationComponent } = useNotification();
 
+    useFocusEffect(
+        useCallback(() => {
+            checkLoginStatus();
+        }, [])
+    );
+
+    // Helper function to clear all user-related data from AsyncStorage
     const clearUserData = async () => {
         const keys = [
             'access_token',
@@ -64,25 +81,16 @@ export default function AccountPage() {
         setIsLoggedIn(false);
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            checkLoginStatus();
-        }, [])
-    );
-
     const checkLoginStatus = async () => {
         try {
             const refreshToken = await AsyncStorage.getItem('refresh_token');
-
             if (!refreshToken) {
                 await clearUserData();
                 return;
             }
 
             const response: any = await authService.refreshToken(refreshToken);
-
             if (response && response.accessToken) {
-                // await AsyncStorage.setItem('access_token', response.accessToken);
                 setIsLoggedIn(true);
             } else {
                 await clearUserData();
@@ -126,17 +134,9 @@ export default function AccountPage() {
         await notify("Thông báo", "Tính năng này sẽ sớm ra mắt", "info");
     };
 
-    if (isLoading) {
-        return (
-            <View className="flex-1 bg-[#272b50] justify-center items-center">
-                <ActivityIndicator size="large" color="#1e90ff" />
-            </View>
-        );
-    }
     return (
         <View className="flex-1 bg-[#272b50] pt-14">
-            <ScrollView className="flex-1 bg-[#272b50]" showsVerticalScrollIndicator={false}>
-                {/* Header Padding for Status Bar */}
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
                 <View className="px-5 pb-2">
                     <StatusBar barStyle="light-content" />
                     {ConfirmComponent}
@@ -145,6 +145,7 @@ export default function AccountPage() {
                     {isLoggedIn && (
                         <View>
                             {/* Top Section - General */}
+                            <SectionHeader title="Cá nhân" isSmallMargin={true} />
                             <MenuItem
                                 icon={<Ionicons name="notifications" size={22} color="white" />}
                                 title="Thông báo"
@@ -155,7 +156,6 @@ export default function AccountPage() {
                                 icon={<MaterialCommunityIcons name="card-account-details" size={22} color="white" />}
                                 title="Thẻ thành viên U22"
                                 iconBgColor="bg-orange-500"
-                                isLast={true}
                                 onPress={() => router.push('/(account)/membercard')}
                             />
                         </View>
@@ -181,11 +181,12 @@ export default function AccountPage() {
                                 icon={<MaterialCommunityIcons name="account-remove" size={22} color="white" />}
                                 title="Xóa tài khoản"
                                 iconBgColor="bg-red-500"
-                                isLast={true}
                                 onPress={handleDeleteAccount}
                             />
                         </View>
                     )}
+
+                    {/* Support Section */}
                     <SectionHeader title="Hỗ trợ" />
                     <MenuItem
                         icon={<Ionicons name="call" size={22} color="white" />}
@@ -197,7 +198,7 @@ export default function AccountPage() {
                     <MenuItem
                         icon={<MaterialCommunityIcons name="chat" size={22} color="white" />}
                         title="Zalo"
-                        subtitle="https://zalo.me/hongquan_dev"
+                        subtitle="Chat với chúng tôi"
                         iconBgColor="bg-blue-400"
                         onPress={() => {
                             Linking.openURL('https://zalo.me/0865205608').catch(err =>
@@ -208,20 +209,18 @@ export default function AccountPage() {
 
                     {isLoggedIn && (
                         // Support Section
-                        < View >
-                            < MenuItem
+                        <View>
+                            <MenuItem
                                 icon={<Ionicons name="people" size={22} color="white" />}
                                 title="Đặt vé nhóm, tập thể"
                                 iconBgColor="bg-slate-500"
-                                isLast={true}
                                 onPress={handleGroupBooking}
                             />
                         </View>
                     )}
 
-
-                    {/* Setting Section */}
-                    <SectionHeader title="Cài đặt" />
+                    {/* Information Section */}
+                    <SectionHeader title="Thông tin" />
                     <MenuItem
                         icon={<Ionicons name="shield-checkmark" size={22} color="white" />}
                         title="Điều khoản & Chính sách"
@@ -229,7 +228,7 @@ export default function AccountPage() {
                         onPress={() => router.push('/(account)/terms_policy')}
                     />
                     <MenuItem
-                        icon={<Ionicons name="business" size={22} color="white" />}
+                        icon={<MaterialCommunityIcons name="office-building" size={22} color="white" />}
                         title="Thông tin doanh nghiệp"
                         iconBgColor="bg-green-600"
                         onPress={() => router.push('/(account)/business_info')}
@@ -240,38 +239,42 @@ export default function AccountPage() {
                             icon={<Ionicons name="log-out" size={22} color="white" />}
                             title="Đăng xuất"
                             iconBgColor="bg-purple-600"
-                            isLast={true}
                             onPress={handleLogout}
                         />
                     )}
 
                     {/* --- If not logged in --- */}
                     {!isLoggedIn && (
-                        <View className="flex-row justify-between px-5 mt-8 mb-5">
+                        <View className="flex-row gap-3 px-0 mt-6 mb-3">
+                            {/* Primary Button: Login */}
                             <TouchableOpacity
                                 onPress={() => router.push('/(auth)/login')}
-                                className="bg-[#3bacef] flex-1 mr-2 py-3 rounded-xl items-center shadow-sm"
+                                activeOpacity={0.8}
+                                className="bg-[#3bacef] flex-1 py-3 rounded-xl items-center shadow-md shadow-blue-500/20"
                             >
-                                <Text className="text-white font-bold text-lg">Đăng nhập</Text>
+                                <Text className="text-white font-semibold text-lg">Đăng nhập</Text>
                             </TouchableOpacity>
+
+                            {/* Secondary Button: Signup */}
                             <TouchableOpacity
                                 onPress={() => router.push('/(auth)/signup')}
-                                className="bg-transparent border border-[#3bacef] flex-1 ml-2 py-3 rounded-xl items-center"
+                                activeOpacity={0.8}
+                                className="bg-slate-50 border border-slate-200 flex-1 py-3 rounded-xl items-center"
                             >
-                                <Text className="text-[#3bacef] font-bold text-lg">Đăng ký</Text>
+                                <Text className="text-slate-700 font-semibold text-lg">Đăng ký</Text>
                             </TouchableOpacity>
                         </View>
                     )}
 
                     {/* Footer Info */}
-                    <View className="mt-2 items-center">
-                        <Text className="text-gray-400 text-sm">Phiên bản 1.0.0</Text>
-                        <Text className="text-gray-500 text-sm">
+                    <View className="mt-2 items-center border-t border-white/10 pt-2">
+                        <Text className="text-gray-400 text-sm font-semibold">Phiên bản 1.0.0</Text>
+                        <Text className="text-gray-500 text-[11px] text-center leading-relaxed">
                             Ứng dụng được phát triển bởi Nguyen Hong Quan
                         </Text>
                     </View>
                 </View>
-            </ScrollView >
+            </ScrollView>
         </View>
     );
 }
