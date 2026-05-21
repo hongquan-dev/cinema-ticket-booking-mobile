@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, StatusBar, Text, View } from 'react-native';
@@ -9,16 +10,10 @@ export default function NewsPage() {
     const router = useRouter();
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const [refreshing, setRefreshing] = useState(false);
 
-    const loadNews = async (isPullToRefresh = false) => {
-        if (isPullToRefresh) {
-            setRefreshing(true);
-        } else {
-            setLoading(true);
-        }
-
+    const loadNews = async () => {
         try {
+            setLoading(true);
             // API parameters to filter by PUBLISHED status
             const params = {
                 page: 1,
@@ -32,10 +27,9 @@ export default function NewsPage() {
             // Map the API response to the local state
             setPosts(response.posts || []);
         } catch (error) {
-            console.error("Failed to fetch news:", error);
+            // console.error("Failed to fetch news:", error);
         } finally {
             setLoading(false);
-            setRefreshing(false);
         }
     };
 
@@ -59,11 +53,11 @@ export default function NewsPage() {
     };
 
     return (
-        <View className="flex-1 bg-[#272b50] pt-14">
+        <View className="flex-1 bg-[#272b50] pt-14 px-4">
             <StatusBar barStyle="light-content" />
 
             {/* Show full screen loader only on initial load */}
-            {loading && !refreshing ? (
+            {loading ? (
                 <View className="flex-1 justify-center items-center">
                     <ActivityIndicator size="large" color="#1e90ff" />
                 </View>
@@ -75,7 +69,7 @@ export default function NewsPage() {
                         <PostCard
                             title={item.title}
                             time={formatTime(item.createdAt)}
-                            imageUri={item.thumbnailUrl} // Ensure this field matches your Post model
+                            imageUri={item.thumbnailUrl}
                             onPress={() => router.push({
                                 pathname: '/(details)/newsdetails',
                                 params: {
@@ -93,14 +87,16 @@ export default function NewsPage() {
                     contentContainerStyle={{ paddingBottom: 40 }}
                     showsVerticalScrollIndicator={false}
 
-                    // Pull to refresh logic
-                    onRefresh={() => loadNews(true)}
-                    refreshing={refreshing}
-
                     // UI when no data is returned
                     ListEmptyComponent={
-                        <View className="mt-20 items-center">
-                            <Text className="text-gray-400 text-lg">No updates at the moment</Text>
+                        <View className="mt-16 items-center px-8">
+                            <Ionicons name="newspaper-outline" size={50} color="#8E8E93" />
+                            <Text className="text-white text-xl font-bold mt-3">
+                                Hiện không có tin tức nào
+                            </Text>
+                            <Text className="text-gray-400 text-[15px] text-center mt-1 leading-relaxed">
+                                Các tin tức, sự kiện mới nhất và bài viết cập nhật từ hệ thống sẽ xuất hiện tại đây.
+                            </Text>
                         </View>
                     }
                 />

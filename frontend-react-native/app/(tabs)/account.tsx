@@ -137,7 +137,7 @@ export default function AccountPage() {
     return (
         <View className="flex-1 bg-[#272b50] pt-14">
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                <View className="px-5 pb-2">
+                <View className="px-4 pb-2">
                     <StatusBar barStyle="light-content" />
                     {ConfirmComponent}
                     {NotificationComponent}

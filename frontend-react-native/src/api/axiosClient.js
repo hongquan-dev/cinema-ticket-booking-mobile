@@ -48,6 +48,11 @@ axiosClient.interceptors.response.use(
         // If error 401 (Unauthorized) and this request has not been retried
         if (error.response?.status === 401 && !originalRequest._retry) {
 
+            // Handle cases where the request does not require auth (e.g., public endpoints)
+            if (originalRequest?.requireAuth === false) {
+                return Promise.reject(error);
+            }
+
             // If 401 from login → wrong password, do nothing
             if (originalRequest.url?.includes('/auth/login')) {
                 return Promise.reject(error);

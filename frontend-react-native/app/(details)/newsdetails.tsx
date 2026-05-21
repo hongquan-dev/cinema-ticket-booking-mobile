@@ -29,9 +29,9 @@ const NewsDetails = () => {
             <StatusBar barStyle="light-content" />
 
             {/* Custom Header */}
-            <View className="flex-row items-center justify-between px-[15px] pt-[50px] pb-[13px] z-10 bg-[#272b50]">
+            <View className="flex-row items-center justify-between px-[15px] pt-[46px] pb-[6px] z-10 bg-[#272b50]">
                 <TouchableOpacity onPress={() => router.back()} className="p-[5px]">
-                    <Ionicons name="arrow-back" size={28} color="white" />
+                    <Ionicons name="arrow-back" size={26} color="white" />
                 </TouchableOpacity>
                 <Text className="text-white text-[18px] font-medium">Chi tiết tin tức</Text>
                 <View className="w-[28px]" />
@@ -52,14 +52,14 @@ const NewsDetails = () => {
                     {/* Category Tag & Time */}
                     <View className="flex-row items-center mb-3">
                         <View className="bg-pink-600 px-2 py-1 rounded">
-                            <Text className="text-white text-[14px] font-bold uppercase">
+                            <Text className="text-white text-[13px] font-bold uppercase">
                                 {PostLabel[category as keyof typeof PostLabel] || 'Tin tức'}
                             </Text>
                         </View>
                     </View>
 
                     {/* News Title */}
-                    <Text className="text-white text-xl font-bold leading-7 mb-4">
+                    <Text className="text-white text-[18px] font-bold leading-7 mb-4">
                         {(title as string)?.toUpperCase()}
                     </Text>
 
