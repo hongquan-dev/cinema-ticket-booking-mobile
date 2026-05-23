@@ -3,7 +3,7 @@ import axiosClient from '../api/axiosClient';
 const bookingApi = {
     getSeatLayout: (showtimeId) => {
         const url = `/bookings/seat-layout/${showtimeId}`;
-        return axiosClient.get(url);
+        return axiosClient.get(url, { requireAuth: false });
     },
 
     bookTickets: (bookingData) => {
