@@ -1,50 +1,60 @@
-# Welcome to your Expo app 👋
+# Mobile Cinema Ticket Booking App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+*[Đọc phiên bản Tiếng Việt tại đây](README.vi.md)*
 
-## Get started
+Welcome to the **Mobile Cinema Ticket Booking App**! This is a mobile application designed for booking cinema tickets, and this mobile app is exclusively for Customers. For the complete system including both Admin and Customer views, see: https://github.com/hongquan-dev/cinema-ticket-booking-web
 
-1. Install dependencies
+## 🏗️ Technologies Used
 
-   ```bash
-   npm install
-   ```
+This project is divided into two parts (Backend, Frontend):
 
-2. Start the app
+### 2. Frontend (`frontend-react-native`)
 
-   ```bash
-   npx expo start
-   ```
+- **Framework:** React Native + Expo
+- **Language:** TypeScript
+- **CSS Framework:** NativeWind (Tailwind CSS for React Native)
+- **Routing:** Expo Router
+- **HTTP Client:** Axios
+- **Animations:** React Native Reanimated
+- **UI Components:** Lucide React Native, Expo Vector Icons
+- **Utilities:** AsyncStorage, Expo SecureStore
 
-In the output, you'll find options to open the app in a
+## 🚀 Installation & Running the Project
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### System Requirements
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Java:** 21 or higher (Java 21 is recommended, Java 25 has conflicts with Lombok)
+- **Apache Maven:** 3.8.x or higher
+- **Node.js:** 18.x or higher (Latest LTS version is recommended)
+- **pnpm:** 8.x or higher
+- **PostgreSQL:** 13+ (15.x or 16.x is recommended)
 
-## Get a fresh project
+### 2️. Running the Frontend (React Native)
 
-When you're ready, run:
+1. **Navigate to the frontend directory:**
 
-```bash
-npm run reset-project
-```
+    ```bash
+    cd frontend-react-native
+    ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. **Install dependencies:**
 
-## Learn more
+    ```bash
+    pnpm install
+    ```
 
-To learn more about developing your project with Expo, look at the following resources:
+*(If you don't have pnpm, install it using: `npm install -g pnpm`)*
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+3. **Start the app:**
 
-## Join the community
+    ```bash
+    npx expo start
+    ```
 
-Join our community of developers creating universal apps.
+4. **You can press 'w' to view it on the web**
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+    ```bash
+    w
+    ```
+
+**The frontend will run at:** `http://localhost:8081` (Web) or by scanning the QR code with the Expo Go app
