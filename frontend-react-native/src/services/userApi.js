@@ -2,22 +2,22 @@ import axiosClient from '../api/axiosClient';
 
 const userApi = {
     getById: (id) => {
-        const url = `/users/${id}`;
+        const url = `/api/users/${id}`;
         return axiosClient.get(url);
     },
 
     update: (id, updateData) => {
-        const url = `/users/${id}`;
+        const url = `/api/users/${id}`;
         return axiosClient.put(url, updateData);
     },
 
     changePassword: (userId, passwordData) => {
-        const url = `/users/change-password/${userId}`;
+        const url = `/api/users/change-password/${userId}`;
         return axiosClient.post(url, passwordData);
     },
 
     updateAvatar: (id, formData) => {
-        const url = `/users/${id}/avatar`;
+        const url = `/api/users/${id}/avatar`;
         return axiosClient.put(url, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -26,7 +26,7 @@ const userApi = {
     },
 
     sendVerificationEmail: (id) => {
-        const url = `/users/${id}/send-verification`;
+        const url = `/api/users/${id}/send-verification`;
         return axiosClient.post(url);
     }
 };

@@ -7,11 +7,13 @@ import { Platform } from 'react-native';
 const getBaseUrl = () => {
     if (Platform.OS === 'web') return 'http://localhost:8080';
     const hostUri = Constants.expoConfig?.hostUri;
+    console.log(hostUri);
+
     if (hostUri) {
         const ip = hostUri.split(':')[0];
         return `http://${ip}:8080`;
     }
-    return 'http://192.168.1.15:8080';
+    return 'http://192.168.1.9:8080';
 };
 
 const axiosClient = axios.create({
@@ -20,18 +22,16 @@ const axiosClient = axios.create({
     timeout: 10000,
 });
 
-// Function to clear all user data
 const clearAuthAndRedirect = async () => {
     const keys = ['access_token', 'refresh_token', 'user_id', 'user_name', 'user_email', 'user_phone'];
     await AsyncStorage.multiRemove(keys);
     router.replace('/(tabs)/home');
 };
 
-// 1. Request Interceptor: Attach Access Token to header
 axiosClient.interceptors.request.use(
     async (config) => {
         const token = await AsyncStorage.getItem('access_token');
-        if (token) {
+        if (token && config.requireAuth !== false) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -39,26 +39,22 @@ axiosClient.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// 2. Response Interceptor: Handle data and Refresh Token when 401 error
 axiosClient.interceptors.response.use(
     (response) => response.data,
     async (error) => {
         const originalRequest = error.config;
 
-        // If error 401 (Unauthorized) and this request has not been retried
         if (error.response?.status === 401 && !originalRequest._retry) {
 
-            // Handle cases where the request does not require auth (e.g., public endpoints)
             if (originalRequest?.requireAuth === false) {
                 return Promise.reject(error);
             }
 
-            // If 401 from login → wrong password, do nothing
             if (originalRequest.url?.includes('/auth/login')) {
                 return Promise.reject(error);
             }
 
-            originalRequest._retry = true; // Mark as retried to avoid infinite loop
+            originalRequest._retry = true;
 
             try {
                 const refreshToken = await AsyncStorage.getItem('refresh_token');
@@ -68,7 +64,6 @@ axiosClient.interceptors.response.use(
                     return Promise.reject("No refresh token available");
                 }
 
-                // Call refresh token API (use pure axios to avoid axiosClient interceptor)
                 const res = await axios.post(`${getBaseUrl()}/auth/refresh`, {
                     refreshToken: refreshToken
                 });
@@ -76,15 +71,12 @@ axiosClient.interceptors.response.use(
                 if (res.data && res.data.accessToken) {
                     const newAccessToken = res.data.accessToken;
 
-                    // Save new token to storage
                     await AsyncStorage.setItem('access_token', newAccessToken);
 
-                    // Update header of old request and retry
                     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                     return axiosClient(originalRequest);
                 }
             } catch (refreshError) {
-                // If refresh token is also expired or error
                 await clearAuthAndRedirect();
                 return Promise.reject("Session expired");
             }

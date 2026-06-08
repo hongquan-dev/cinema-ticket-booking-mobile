@@ -2,7 +2,7 @@ import axiosClient from '../api/axiosClient';
 
 const ticketPriceApi = {
     calculatePrice: (params) => {
-        const url = '/ticket-prices/calculate';
+        const url = '/api/ticket-prices/calculate';
         return axiosClient.get(url, {
             params: {
                 movieFormat: params.movieFormat,

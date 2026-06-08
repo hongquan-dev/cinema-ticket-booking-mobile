@@ -31,22 +31,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Get authorization header from the request
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
 
-        // Check if header is missing or doesn't start with Bearer
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extract token from header (skip "Bearer " prefix)
         jwt = authHeader.substring(7);
         username = jwtUtil.extractUsername(jwt);
 
-        // Authenticate if username exists and no current authentication in context
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
@@ -56,12 +52,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Save authentication to security context
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
-        // Continue filter chain
         filterChain.doFilter(request, response);
     }
 }

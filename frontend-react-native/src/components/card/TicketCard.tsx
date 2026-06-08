@@ -70,7 +70,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({ item, onCancel }) => {
     const seatTypeInfo = getSeatTypeInfo(item.seat?.seatType);
 
     return (
-        <View className="mx-5 mb-5 bg-[#1e2240] rounded-2xl border border-white/5 shadow-lg relative overflow-hidden">
+        <View className="mb-5 bg-[#1e2240] rounded-2xl border border-white/5 shadow-lg relative overflow-hidden">
             {/* Visual Notch Left (mimics cut ticket) */}
             <View
                 style={{

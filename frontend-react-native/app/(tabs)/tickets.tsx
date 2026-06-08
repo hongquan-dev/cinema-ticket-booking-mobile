@@ -120,13 +120,13 @@ export default function TicketsPage() {
     }, [tickets, activeTab]);
 
     return (
-        <View className="flex-1 bg-[#272b50] pt-14">
+        <View className="flex-1 bg-[#272b50] pt-14 px-4">
             <StatusBar barStyle="light-content" />
             {ConfirmComponent}
             {NotificationComponent}
 
             {/* --- STATE FILTERS (TABS) --- */}
-            <View className="flex-row mx-5 mb-2 bg-[#1a1d3d] p-1 rounded-xl border border-white/5">
+            <View className="flex-row mb-2 bg-[#1a1d3d] p-1 rounded-xl border border-white/5">
                 <TouchableOpacity
                     onPress={() => setActiveTab('ALL')}
                     className={`flex-1 py-2.5 rounded-lg items-center ${activeTab === 'ALL' ? 'bg-[#1e90ff]' : ''}`}

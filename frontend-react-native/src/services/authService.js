@@ -2,8 +2,7 @@ import axiosClient from '../api/axiosClient';
 
 const authService = {
     signup: (userData) => {
-        const url = '/auth/signup';
-        // Map data fields to match Spring Boot Entity
+        const url = '/api/auth/signup';
         const payload = {
             username: userData.username,
             email: userData.email,
@@ -14,7 +13,7 @@ const authService = {
     },
 
     login: (credentials) => {
-        const url = '/auth/login';
+        const url = '/api/auth/login';
         const payload = {
             username: credentials.username,
             password: credentials.password,
@@ -24,12 +23,12 @@ const authService = {
     },
 
     refreshToken: (token) => {
-        const url = '/auth/refresh';
+        const url = '/api/auth/refresh';
         return axiosClient.post(url, { refreshToken: token });
     },
 
     logout: () => {
-        const url = '/auth/logout';
+        const url = '/api/auth/logout';
         return axiosClient.post(url);
     }
 
